@@ -1,8 +1,8 @@
 function onSubmit(token) {
     $(".alert").alert();
-    var inputURL = $.trim($("#URL").val());
-    var strRegex = '^((https|http|ftp|rtsp|mms)?://)'
-        + '?(([0-9a-z_!~*\'().&=+$%-]+: )?[0-9a-z_!~*\'().&=+$%-]+@)?'
+    var inputURL = encodeURI($.trim($("#URL").val()));
+    var strRegex = '^((https|http)://)'
+        + '+(([0-9a-z_!~*\'().&=+$%-]+: )?[0-9a-z_!~*\'().&=+$%-]+@)?'
         + '(([0-9]{1,3}.){3}[0-9]{1,3}'
         + '|'
         + '([0-9a-z_!~*\'()-]+.)*'
