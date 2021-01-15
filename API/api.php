@@ -9,7 +9,7 @@ $ip = getIp();
 /** @var $recaptcha_key */
 /*验证请求的合法性*/
 $verify = tokenVerify(trim($_POST['token']), $recaptcha_key, $ip);
-if (!$verify['success'] && $verify['score'] < 0.3) {
+if (!$verify['success'] || $verify['score'] < 0.3) {
     $json_response['status'] = 400;
     $json_response['code'] = 'Bad Request';
     die(json_encode($json_response));
