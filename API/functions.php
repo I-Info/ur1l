@@ -31,3 +31,15 @@ function getIp(): string
     }
     return $ip;
 }
+
+/*hash函数，随意。仅作参考，性能，碰撞率没有保证。base随意*/
+function getHash($str, $base): string
+{
+    $len = strlen($base);
+    $output = substr($base, crc32($str . "Bilibili") % $len, 1);#2
+    $output .= substr($base, (crc32($str) * 7) % $len, 1);#3
+    $output .= substr($base, crc32(strrev($str)) % $len, 1);#4
+    $output .= substr($base, (crc32(strrev($str)) * 91) % $len, 1);#5
+    $output .= substr($base, crc32(strrev($str . "I_Info")) % $len, 1);#6
+    return $output;
+}
