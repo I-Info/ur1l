@@ -22,9 +22,10 @@ function defaultSubmit() {
                         token: token
                     },
                     function (data, status) {
-                        var txt1;
+                        let txt1;
                         if (data.status == 200) {
-                            txt1 = '<div class="alert alert-success fade in"><a href="#" class="close" data-dismiss="alert">&times;</a><strong>Success!</strong>  Got it: <strong class="url-return">https://ur1l.com/' + data.code + '</strong></div>';
+                            let url = "https://ur1l.com/" + data.code;
+                            txt1 = '<div class="alert alert-success fade in" ><a href="#" class="close" data-dismiss="alert">&times;</a><strong>Success!</strong>  Got it: <strong class="url-return"><a href="' + url + '" target="_blank">' + url + '</a></strong></div>';
                         } else {
                             txt1 = '<div class="alert alert-danger fade in"><a href="#" class="close" data-dismiss="alert">&times;</a><strong>' + data.code + '</strong></div>';
                         }

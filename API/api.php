@@ -7,9 +7,10 @@ $ip = getIp();
 /** @var $redis_host */
 /** @var $redis_port */
 /** @var $recaptcha_key */
+/** @var $min_score */
 /*验证请求的合法性*/
 $verify = tokenVerify(trim($_POST['token']), $recaptcha_key, $ip);
-if (!$verify['success'] || $verify['score'] < 0.3) {
+if (!$verify['success'] || $verify['score'] < $min_score) {
     $json_response['status'] = 400;
     $json_response['code'] = 'Bad Request';
     die(json_encode($json_response));
@@ -27,7 +28,7 @@ if (strlen($url) > 110 || !preg_match($patten, $url)) {
     $json_response['code'] = 'Bad Request';
     die(json_encode($json_response));
 }
-
+//新建redis连接
 $redis = new Redis();
 $redis->connect($redis_host, $redis_port);
 try {
@@ -59,15 +60,15 @@ if ($redis->exists($key)) {
 $hash = getHash($url, $base);
 
 //存储。带碰撞，重复检测。
-$dic = "0123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";//防碰撞位字符定义
+$dic = "0123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";//防碰撞位字符定义,随意
 $index = 0;
-$sIndex = substr($dic,$index,1);
+$sIndex = substr($dic, $index, 1);
 $flag = false;//重复记录
-while (!$redis->hSetNx("urls:".$hash.$sIndex,"URL",$url) && !($flag = $redis->hGet("urls:".$hash.$sIndex,"URL") == $url)) {
-    $sIndex = substr($dic,++$index,1);
+while (!$redis->hSetNx("urls:" . $hash . $sIndex, "URL", $url) && !($flag = $redis->hGet("urls:" . $hash . $sIndex, "URL") == $url)) {
+    $sIndex = substr($dic, ++$index, 1);
 }
 if (!$flag) {
-    $redis->expire("urls:".$hash.$index,86400);//设置销毁时间1天
+    $redis->expire("urls:" . $hash . $index, 86400);//设置销毁时间1天
 }
 
 if ($index != 0) {
